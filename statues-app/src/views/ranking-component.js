@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 
-import "../components/button-component";
+
 
 export class RankingComponent extends LitElement {
     static get styles() {
@@ -27,3 +27,5 @@ export class RankingComponent extends LitElement {
         `;
       }
 }
+
+customElements.define("ranking-component", RankingComponent);
