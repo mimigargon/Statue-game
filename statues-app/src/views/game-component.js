@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 
-import "../components/button-component";
+
 
 export class GameComponent extends LitElement {
     static get styles() {
@@ -23,7 +23,9 @@ export class GameComponent extends LitElement {
     
       render() {
         return html`
-          
+          <h1>HOLA</h1>
         `;
       }
 }
+
+customElements.define("game-component", GameComponent);
