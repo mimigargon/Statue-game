@@ -13,6 +13,7 @@
     "start": "web-dev-server"
   },
   "dependencies": {
+    "@vaadin/vaadin-icons": "^23.2.5",
     "lit": "^2.0.2",
     "pwa-helpers": "^0.9.1"
   },
