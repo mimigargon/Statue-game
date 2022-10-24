@@ -24,6 +24,12 @@ export class GameComponent extends LitElement {
       },
       highScorePoints: {
         type: Number,
+      }, 
+      leftClicks: {
+        type: Number,
+      },
+      rightClicks: {
+        type: Number,
       }
     };
   }
@@ -39,6 +45,8 @@ export class GameComponent extends LitElement {
     this.time = 0;
     this.points = 0;
     this.highScorePoints = 0;
+    this.leftClicks = 0;
+    this.rightClicks = 0;
   }
 
   firstUpdated() {
@@ -46,6 +54,14 @@ export class GameComponent extends LitElement {
       localStorage.getItem("user." + localStorage.getItem("actualUser"))
     );
     console.log(this.actualUser)
+  }
+
+  toHome(view){
+    this.dispatchEvent(new CustomEvent("to-home", {
+      detail: {
+        view: view,
+      }
+    }))
   }
 
   toggleLights() {
@@ -66,33 +82,53 @@ export class GameComponent extends LitElement {
 
   pointsToScore(){
     if(this.canWalk === true) {
-      this.points = this.points + 1;
-      this.highScorePoints = this.highScorePoints + 1;
       this.actualUser.score = this.points;
       this.actualUser.highScore = this.highScorePoints;
+
+      if(this.actualUser.highScore > this.actualUser.score){
+        this.highScorePoints = this.highScorePoints + 0;
+        this.points = this.points + 1;
+      }else if(this.actualUser.score === this.actualUser.highScore){
+        this.points = this.points + 1;
+        this.highScorePoints = this.highScorePoints + 1;
+      }
+
+      this.clicks = this.clicks + 1;
     
       localStorage.setItem("user." + this.actualUser.name, JSON.stringify(this.actualUser));
+      
       this.leftDblClickHandler();
       this.rightDblClickHandler();
       this.requestUpdate();
 
     }else {
       this.points = 0;
+      this.actualUser.score = this.points;
       localStorage.setItem("user." + this.actualUser.name, JSON.stringify(this.actualUser));
       this.requestUpdate();
     }
   } 
 
   leftDblClickHandler() {
-    const leftButton = this.shadowRoot.querySelector('.left').addEventListener("dblclick", (event) => {
-      this.actualUser.score = this.actualUser.score - 1; 
+    const leftButton = this.shadowRoot.querySelector('.left').addEventListener("click", (event) => {
+      this.leftClicks = this.leftClicks + 1
+      if(this.leftClicks > this.rightClicks){
+        this.points - 1; 
+        this.actualUser.score = this.points;
+      }
+      console.log(this.leftClicks)
       localStorage.setItem("user." + this.actualUser.name, JSON.stringify(this.actualUser));
     });
   }
 
   rightDblClickHandler() {
-    const rightButton = this.shadowRoot.querySelector('.right').addEventListener("dblclick", (event) => {
-      this.actualUser.score = this.actualUser.score - 1;
+    const rightButton = this.shadowRoot.querySelector('.right').addEventListener("click", (event) => {
+      this.rightClicks = this.rightClicks + 1;
+      if(this.rightClicks > this.leftClicks){
+        this.points - 1; 
+        this.actualUser.score = this.points;
+      }
+      console.log(this.rightClicks)
       localStorage.setItem("user." + this.actualUser.name, JSON.stringify(this.actualUser));
     });
   }
@@ -104,6 +140,7 @@ export class GameComponent extends LitElement {
         <div class="header-container">
           <h1>Red Light, Green Light</h1>
           <h4>Hi ${this.actualUser.name}</h4>
+          <button class="to-home" @click=${() => {this.toHome("home")}}>Home</button>
         </div>
         <div class="game-container">
           <p>High Score: ${this.actualUser.highScore}</p>

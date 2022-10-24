@@ -39,6 +39,10 @@ export class StatuesApp extends LitElement {
     this.navigate(event.detail);
   }
 
+  toHome(event){
+    this.navigate(event.detail);
+  }
+
   navigate(data) {
     window.history.pushState({}, "", data.view);
     this.handleNavigation(window.location);
@@ -55,6 +59,7 @@ export class StatuesApp extends LitElement {
       case "game": {
         return html`<game-component
           .actualUser=${this.actualUser}
+          @to-home=${this.toHome}
         ></game-component>`;
       }
       default: {
