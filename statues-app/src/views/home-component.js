@@ -11,9 +11,6 @@ export class HomeComponent extends LitElement {
       
       static get properties() {
         return {
-          user: {
-            type: Object,
-          },
           title: {
             type: String,
           },
@@ -36,22 +33,23 @@ export class HomeComponent extends LitElement {
         if(name.value === ""){
           alert("You must introduce a name")
         } else if(!localStorage.getItem(name.value)){
-          this.user = {
+          let user = {
             name: name.value,
             score: 0,
             highScore: 0,
           };
-          localStorage.setItem("user." + name.value, JSON.stringify(this.user))
-          this.toGame("game");
+          localStorage.setItem("user." + name.value, JSON.stringify(user))
+          this.toGame("game", user);
         }else{
           alert("This name is already taken!")
         }
       }
 
-      toGame(view){
+      toGame(view, user){
         this.dispatchEvent(new CustomEvent("to-game", {
           detail: {
             view: view,
+            user: user
           }
         }))
       }
