@@ -21,6 +21,9 @@ export class GameComponent extends LitElement {
       },
       points: {
         type: Number,
+      },
+      highScorePoints: {
+        type: Number,
       }
     };
   }
@@ -35,6 +38,7 @@ export class GameComponent extends LitElement {
     this.canWalk = true;
     this.time = 0;
     this.points = 0;
+    this.highScorePoints = 0;
   }
 
   firstUpdated() {
@@ -53,6 +57,7 @@ export class GameComponent extends LitElement {
       this.time = Math.max(10000 - this.actualUser.score * 100, 2000) +
       Math.random(-1500, 1500);
       setInterval(this.toggleLights.bind(this), this.time);
+      this.requestUpdate();
     }else {
       this.time = 3000;
       setInterval(this.toggleLights.bind(this), this.time);
@@ -62,29 +67,36 @@ export class GameComponent extends LitElement {
   pointsToScore(){
     if(this.canWalk === true) {
       this.points = this.points + 1;
+      this.highScorePoints = this.highScorePoints + 1;
       this.actualUser.score = this.points;
+      this.actualUser.highScore = this.highScorePoints;
+    
       localStorage.setItem("user." + this.actualUser.name, JSON.stringify(this.actualUser));
-      
+      this.leftDblClickHandler();
+      this.rightDblClickHandler();
+      this.requestUpdate();
+
     }else {
       this.points = 0;
-      this.actualUser.score = this.points;
       localStorage.setItem("user." + this.actualUser.name, JSON.stringify(this.actualUser));
+      this.requestUpdate();
     }
   } 
 
- /*  lessPoints() {
-    const leftButton = this.shadowRoot.querySelector('.left');
-    const rightButton = this.shadowRoot.querySelector('.right');
-    leftButton.addEventListener('dblclick');
-    rightButton.addEventListener('dblclick');
-    if(leftButton || rg){
-      this.points = this.points - 1;
-      this.actualUser.score = this.points
-      localStorage.setItem("actualUser", this.actualUser.score)
-      console.log('se ha hecho doble click')
-    }
+  leftDblClickHandler() {
+    const leftButton = this.shadowRoot.querySelector('.left').addEventListener("dblclick", (event) => {
+      this.actualUser.score = this.actualUser.score - 1; 
+      localStorage.setItem("user." + this.actualUser.name, JSON.stringify(this.actualUser));
+    });
+  }
 
-  } */
+  rightDblClickHandler() {
+    const rightButton = this.shadowRoot.querySelector('.right').addEventListener("dblclick", (event) => {
+      this.actualUser.score = this.actualUser.score - 1;
+      localStorage.setItem("user." + this.actualUser.name, JSON.stringify(this.actualUser));
+    });
+  }
+
 
   render() {
     return html`
