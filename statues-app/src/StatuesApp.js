@@ -32,9 +32,7 @@ export class StatuesApp extends LitElement {
 
   handleNavigation(location) {
     const route = location.pathname;
-    if ((this.views = route === "/")) {
-      ("home");
-    }
+    this.views = route === "/" ? "home" : route.slice(1);
   }
 
   toGame(event) {
@@ -44,8 +42,8 @@ export class StatuesApp extends LitElement {
   navigate(data) {
     window.history.pushState({}, "", data.view);
     this.handleNavigation(window.location);
-    this.views = data.view;
-    this.actualUser = data.user;
+    this.actualUser = data.user.name;
+    console.log(this.actualUser)
     localStorage.setItem("actualUser", this.actualUser);
   }
 

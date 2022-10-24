@@ -39,7 +39,7 @@ export class GameComponent extends LitElement {
 
   firstUpdated() {
     this.actualUser = JSON.parse(
-      localStorage.getItem("user." + this.actualUser.name)
+      localStorage.getItem("user." + localStorage.getItem("actualUser"))
     );
     console.log(this.actualUser)
   }
@@ -63,12 +63,12 @@ export class GameComponent extends LitElement {
     if(this.canWalk === true) {
       this.points = this.points + 1;
       this.actualUser.score = this.points;
-      localStorage.setItem("actualUser", this.actualUser.score);
+      localStorage.setItem("user." + this.actualUser.name, JSON.stringify(this.actualUser));
       
     }else {
       this.points = 0;
       this.actualUser.score = this.points;
-      localStorage.setItem("actualUser" + this.actualUser.score);
+      localStorage.setItem("user." + this.actualUser.name, JSON.stringify(this.actualUser));
     }
   } 
 
