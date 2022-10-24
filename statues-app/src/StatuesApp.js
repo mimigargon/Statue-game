@@ -7,7 +7,9 @@ import "./views/ranking-component";
 
 export class StatuesApp extends LitElement {
   static get styles() {
-    return css``;
+    return css`
+    background-color: black;
+    `;
   }
 
   static get properties() {
@@ -18,12 +20,16 @@ export class StatuesApp extends LitElement {
       views: {
         type: String,
       },
+      users: {
+        type: Object,
+      }
     };
   }
 
   constructor() {
     super();
     this.actualUser = {};
+    this.users = {};
     this.views = "home";
     installRouter((location) => {
       this.handleNavigation(location);
@@ -43,12 +49,17 @@ export class StatuesApp extends LitElement {
     this.navigate(event.detail);
   }
 
+  toRanking(event){
+    this.navigate(event.detail);
+  }
+
   navigate(data) {
     window.history.pushState({}, "", data.view);
     this.handleNavigation(window.location);
     this.actualUser = data.user.name;
-    console.log(this.actualUser)
     localStorage.setItem("actualUser", this.actualUser);
+    this.users = data.user.name;
+    localStorage.setItem("users", this.users);
   }
 
   handleViews() {
@@ -60,7 +71,11 @@ export class StatuesApp extends LitElement {
         return html`<game-component
           .actualUser=${this.actualUser}
           @to-home=${this.toHome}
+          @to-ranking=${this.toRanking}
         ></game-component>`;
+      }
+      case "ranking": {
+        return html `<ranking-component .users=${this.users}></ranking-component>`;
       }
       default: {
         this.navigate({ view: "home" });

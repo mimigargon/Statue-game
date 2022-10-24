@@ -2,7 +2,65 @@ import { LitElement, html, css } from "lit";
 
 export class GameComponent extends LitElement {
   static get styles() {
-    return css``;
+    return css`
+      * {
+        font-family: fantasy;
+        color: black;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        place-content: center;
+        align-items: center;
+        margin-top: 50px;
+      }
+
+      .header-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .game-container {
+        margin-top: 5%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .lights-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        align-content: center;
+      }
+
+      button {
+        background-color: transparent;
+        border: 2px solid black;
+        border-radius: 20px;
+        padding: 10px 20px 10px 20px;
+        font-size: 17px;
+      }
+
+      p {
+        margin-bottom: 35px;
+        font-size: 27px;
+        margin-top: -5px;
+      }
+
+      .green-light {
+        font-size: 80px;
+      }
+
+      .red-light {
+        font-size: 80px;
+      }
+    `;
   }
 
   static get properties() {
@@ -25,12 +83,6 @@ export class GameComponent extends LitElement {
       highScorePoints: {
         type: Number,
       },
-      leftClicks: {
-        type: Number,
-      },
-      rightClicks: {
-        type: Number,
-      },
     };
   }
 
@@ -47,18 +99,29 @@ export class GameComponent extends LitElement {
     this.highScorePoints = 0;
     this.leftClicks = 0;
     this.rightClicks = 0;
+    this.greenLightInterval = "";
+    this.redLightInterval = "";
   }
 
   firstUpdated() {
     this.actualUser = JSON.parse(
       localStorage.getItem("user." + localStorage.getItem("actualUser"))
     );
-    console.log(this.actualUser);
   }
 
   toHome(view) {
     this.dispatchEvent(
       new CustomEvent("to-home", {
+        detail: {
+          view: view,
+        },
+      })
+    );
+  }
+
+  toRanking(view) {
+    this.dispatchEvent(
+      new CustomEvent("to-ranking", {
         detail: {
           view: view,
         },
@@ -75,12 +138,23 @@ export class GameComponent extends LitElement {
       this.time =
         Math.max(10000 - this.actualUser.score * 100, 2000) +
         Math.random(-1500, 1500);
-      setInterval(this.toggleLights.bind(this), this.time);
+      this.greenLightInterval = setInterval(
+        this.toggleLights.bind(this),
+        this.time
+      );
       this.requestUpdate();
     } else {
       this.time = 3000;
-      setInterval(this.toggleLights.bind(this), this.time);
+      this.redLightInterval = setInterval(
+        this.toggleLights.bind(this),
+        this.time
+      );
     }
+  }
+
+  stopGame() {
+    clearInterval(this.greenLightInterval);
+    clearInterval(this.redLightInterval);
   }
 
   pointsToScore() {
@@ -101,7 +175,6 @@ export class GameComponent extends LitElement {
         JSON.stringify(this.actualUser)
       );
 
-      
       this.requestUpdate();
     } else {
       this.points = 0;
@@ -115,44 +188,73 @@ export class GameComponent extends LitElement {
   }
 
   dblClickHandler() {
-    
     this.points = this.points - 2;
     this.actualUser.score = this.points;
+    this.highScorePoints = this.highScorePoints + 0;
+    this.actualUser.highScore = this.highScorePoints;
+    if (this.points === 0) {
+      this.points = this.points - 0;
+    }
     localStorage.setItem(
       "user." + this.actualUser.name,
       JSON.stringify(this.actualUser)
     );
   }
 
- 
-
   render() {
     return html`
       <div class="container">
         <div class="header-container">
           <h1>Red Light, Green Light</h1>
-          <h4>Hi ${this.actualUser.name}</h4>
-          <button
-            class="to-home"
-            @click=${() => {
-              this.toHome("home");
-            }}
-          >
-            Home
-          </button>
+          <h2>Hi ${this.actualUser.name}</h2>
+          <div class="goto-buttons">
+            <button
+              class="to-home"
+              @click=${() => {
+                this.toHome("home");
+              }}
+            >
+              Home
+            </button>
+            <button
+              class="to-ranking"
+              @click=${() => {
+                this.toRanking("ranking");
+              }}
+            >
+              Ranking
+            </button>
+          </div>
         </div>
         <div class="game-container">
           <p>High Score: ${this.actualUser.highScore}</p>
-          <div id="lights-container">
+          <div class="buttons-container">
             <button class="start-game" @click=${this.startGame}>Start!</button>
+            <button class="stop-game" @click=${this.stopGame}>Stop!</button>
+          </div>
+          <div id="lights-container">
             ${this.canWalk
               ? html`<h1 class="green-light">${this.lights.green}</h1>`
               : html`<h1 class="red-light">${this.lights.red}</h1>`}
           </div>
           <p>Score: ${this.actualUser.score}</p>
         </div>
-        <button class="left" @click="${this.pointsToScore}" @dblclick="${this.dblClickHandler}">👣 Left</button>
-        <button class="right" @click="${this.pointsToScore}" @dblclick="${this.dblClickHandler}">Right 👣</button>
+        <div class="walk-buttons">
+          <button
+            class="left"
+            @click="${this.pointsToScore}"
+            @dblclick="${this.dblClickHandler}"
+          >
+            👣 Left
+          </button>
+          <button
+            class="right"
+            @click="${this.pointsToScore}"
+            @dblclick="${this.dblClickHandler}"
+          >
+            Right 👣
+          </button>
+        </div>
       </div>
     `;
   }
