@@ -56,22 +56,6 @@ export class GameComponent extends LitElement {
     console.log(this.actualUser);
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-    const leftButton = this.shadowRoot
-      .querySelector(".left")
-      .addEventListener("dblclick", this.leftDblClickHandler);
-    const rightButton = this.shadowRoot
-      .querySelector(".right")
-      .addEventListener("dblclick", this.rightDblClickHandler);
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    window.removeEventListener("click", this.leftDblClickHandler);
-    window.removeEventListener("click", this.rightDblClickHandler);
-  }
-
   toHome(view) {
     this.dispatchEvent(
       new CustomEvent("to-home", {
@@ -117,8 +101,7 @@ export class GameComponent extends LitElement {
         JSON.stringify(this.actualUser)
       );
 
-      this.leftDblClickHandler();
-      this.rightDblClickHandler();
+      
       this.requestUpdate();
     } else {
       this.points = 0;
@@ -131,8 +114,9 @@ export class GameComponent extends LitElement {
     }
   }
 
-  leftDblClickHandler() {
-    this.points = this.points - 1;
+  dblClickHandler() {
+    
+    this.points = this.points - 2;
     this.actualUser.score = this.points;
     localStorage.setItem(
       "user." + this.actualUser.name,
@@ -140,15 +124,7 @@ export class GameComponent extends LitElement {
     );
   }
 
-  rightDblClickHandler() {
-    this.points = this.points - 1;
-    this.actualUser.score = this.points;
-    console.log(this.rightClicks);
-    localStorage.setItem(
-      "user." + this.actualUser.name,
-      JSON.stringify(this.actualUser)
-    );
-  }
+ 
 
   render() {
     return html`
@@ -175,8 +151,8 @@ export class GameComponent extends LitElement {
           </div>
           <p>Score: ${this.actualUser.score}</p>
         </div>
-        <button class="left" @click="${this.pointsToScore}">👣 Left</button>
-        <button class="right" @click=${this.pointsToScore}>Right 👣</button>
+        <button class="left" @click="${this.pointsToScore}" @dblclick="${this.dblClickHandler}">👣 Left</button>
+        <button class="right" @click="${this.pointsToScore}" @dblclick="${this.dblClickHandler}">Right 👣</button>
       </div>
     `;
   }
