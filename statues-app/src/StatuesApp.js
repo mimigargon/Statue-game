@@ -23,7 +23,8 @@ export class StatuesApp extends LitElement {
 
   constructor() {
     super();
-    (this.actualUser = {}), (this.views = "home");
+    this.actualUser = {};
+    this.views = "home";
     installRouter((location) => {
       this.handleNavigation(location);
     });
@@ -40,13 +41,12 @@ export class StatuesApp extends LitElement {
     this.navigate(event.detail);
   }
 
-  async navigate(data) {
+  navigate(data) {
     window.history.pushState({}, "", data.view);
     this.handleNavigation(window.location);
     this.views = data.view;
-    await data.user;
     this.actualUser = data.user;
-    localStorage.setItem("actualUser", this.actualUser.name);
+    localStorage.setItem("actualUser", this.actualUser);
   }
 
   handleViews() {

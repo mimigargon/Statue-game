@@ -16,6 +16,12 @@ export class GameComponent extends LitElement {
       canWalk: {
         type: Boolean,
       },
+      time: {
+        type: Number,
+      },
+      points: {
+        type: Number,
+      }
     };
   }
 
@@ -27,42 +33,57 @@ export class GameComponent extends LitElement {
       red: "🚨",
     };
     this.canWalk = true;
-    this.isRedLight = false;
-    this.greenLightDuration =
-      Math.max(10000 - this.actualUser.score * 100, 2000) +
-      Math.random(-1500, 1500);
+    this.time = 0;
+    this.points = 0;
   }
 
-  async firstUpdated() {
-    await JSON.parse(
-      localStorage.getItem("user." + localStorage.getItem("actualUser"))
-    );
+  firstUpdated() {
     this.actualUser = JSON.parse(
-      localStorage.getItem("user." + localStorage.getItem("actualUser"))
+      localStorage.getItem("user." + this.actualUser.name)
     );
-  }
-
-  updated() {
-    if (this.canWalk) {
-      let greenLightInterval = setInterval(() => {
-        this.toggleLights();
-        clearInterval(greenLightInterval)
-      }, 3000);
-    } else {
-      let redLightInterval = setInterval(() => {
-        this.toggleLights();
-        clearInterval(redLightInterval)
-      }, this.greenLightDuration);
-    }
+    console.log(this.actualUser)
   }
 
   toggleLights() {
     this.canWalk = !this.canWalk;
-    
   }
 
-  /*  pointsToScore(){
-    
+  startGame() {
+    if(this.canWalk === true){
+      this.time = Math.max(10000 - this.actualUser.score * 100, 2000) +
+      Math.random(-1500, 1500);
+      setInterval(this.toggleLights.bind(this), this.time);
+    }else {
+      this.time = 3000;
+      setInterval(this.toggleLights.bind(this), this.time);
+    }
+  }
+
+  pointsToScore(){
+    if(this.canWalk === true) {
+      this.points = this.points + 1;
+      this.actualUser.score = this.points;
+      localStorage.setItem("actualUser", this.actualUser.score);
+      
+    }else {
+      this.points = 0;
+      this.actualUser.score = this.points;
+      localStorage.setItem("actualUser" + this.actualUser.score);
+    }
+  } 
+
+ /*  lessPoints() {
+    const leftButton = this.shadowRoot.querySelector('.left');
+    const rightButton = this.shadowRoot.querySelector('.right');
+    leftButton.addEventListener('dblclick');
+    rightButton.addEventListener('dblclick');
+    if(leftButton || rg){
+      this.points = this.points - 1;
+      this.actualUser.score = this.points
+      localStorage.setItem("actualUser", this.actualUser.score)
+      console.log('se ha hecho doble click')
+    }
+
   } */
 
   render() {
@@ -75,14 +96,15 @@ export class GameComponent extends LitElement {
         <div class="game-container">
           <p>High Score: ${this.actualUser.highScore}</p>
           <div id="lights-container">
+          <button class="start-game" @click=${this.startGame}>Start!</button>
             ${this.canWalk
               ? html`<h1 class="green-light">${this.lights.green}</h1>`
               : html`<h1 class="red-light">${this.lights.red}</h1>`}
           </div>
           <p>Score: ${this.actualUser.score}</p>
         </div>
-        <button class="left">👣 Left</button>
-        <button class="right">Right 👣</button>
+        <button class="left" @click="${this.pointsToScore}">👣 Left</button>
+        <button class="right" @click=${this.pointsToScore}>Right 👣</button>
       </div>
     `;
   }

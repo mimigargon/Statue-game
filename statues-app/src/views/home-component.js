@@ -23,7 +23,6 @@ export class HomeComponent extends LitElement {
     
       constructor() {
         super();
-        this.user = {};
         this.views = "";
       }
 
@@ -32,7 +31,7 @@ export class HomeComponent extends LitElement {
 
         if(name.value === ""){
           alert("You must introduce a name")
-        } else if(!localStorage.getItem(name.value)){
+        } else if(!localStorage.getItem("user." + name.value)){
           let user = {
             name: name.value,
             score: 0,
@@ -41,7 +40,8 @@ export class HomeComponent extends LitElement {
           localStorage.setItem("user." + name.value, JSON.stringify(user))
           this.toGame("game", user);
         }else{
-          alert("This name is already taken!")
+          const logUser = JSON.parse(localStorage.getItem("user." + name.value));
+          this.toGame("game", logUser)
         }
       }
 
