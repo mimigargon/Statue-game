@@ -73,6 +73,7 @@ export class GameComponent extends LitElement {
       },
       canWalk: {
         type: Boolean,
+        attribute: 'can-walk',
       },
       time: {
         type: Number,
@@ -83,6 +84,14 @@ export class GameComponent extends LitElement {
       highScorePoints: {
         type: Number,
       },
+      greenLightInterval: {
+        type: String,
+        attribute: "green-interval"
+      },
+      redLightInterval: {
+        type: String,
+        attribute: "red-interval"
+      }
     };
   }
 
@@ -109,21 +118,23 @@ export class GameComponent extends LitElement {
     );
   }
 
-  toHome(view) {
+  toHome(view, user) {
     this.dispatchEvent(
       new CustomEvent("to-home", {
         detail: {
           view: view,
+          user: user,
         },
       })
     );
   }
 
-  toRanking(view) {
+  toRanking(view, user) {
     this.dispatchEvent(
       new CustomEvent("to-ranking", {
         detail: {
           view: view,
+          user: user,
         },
       })
     );
@@ -211,15 +222,15 @@ export class GameComponent extends LitElement {
             <button
               class="to-home"
               @click=${() => {
-                this.toHome("home");
+                this.toHome("home", this.actualUser);
               }}
             >
               Home
             </button>
             <button
-              class="to-ranking"
+              id="to-ranking"
               @click=${() => {
-                this.toRanking("ranking");
+                this.toRanking("ranking", this.actualUser);
               }}
             >
               Ranking
@@ -229,8 +240,8 @@ export class GameComponent extends LitElement {
         <div class="game-container">
           <p>High Score: ${this.actualUser.highScore}</p>
           <div class="buttons-container">
-            <button class="start-game" @click=${this.startGame}>Start!</button>
-            <button class="stop-game" @click=${this.stopGame}>Stop!</button>
+            <button id="start-game" @click=${this.startGame}>Start!</button>
+            <button id="stop-game" @click=${this.stopGame}>Stop!</button>
           </div>
           <div id="lights-container">
             ${this.canWalk

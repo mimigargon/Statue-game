@@ -8,7 +8,7 @@ import "./views/ranking-component";
 export class StatuesApp extends LitElement {
   static get styles() {
     return css`
-    background-color: black;
+      background-color: black;
     `;
   }
 
@@ -41,11 +41,11 @@ export class StatuesApp extends LitElement {
     this.navigate(event.detail);
   }
 
-  toHome(event){
+  toHome(event) {
     this.navigate(event.detail);
   }
 
-  toRanking(event){
+  toRanking(event) {
     this.navigate(event.detail);
   }
 
@@ -69,7 +69,9 @@ export class StatuesApp extends LitElement {
         ></game-component>`;
       }
       case "ranking": {
-        return html `<ranking-component></ranking-component>`;
+        return html`<ranking-component
+          @to-game=${this.toGame}
+        ></ranking-component>`;
       }
       default: {
         this.navigate({ view: "home" });
