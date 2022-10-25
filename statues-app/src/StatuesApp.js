@@ -20,16 +20,12 @@ export class StatuesApp extends LitElement {
       views: {
         type: String,
       },
-      users: {
-        type: Object,
-      }
     };
   }
 
   constructor() {
     super();
     this.actualUser = {};
-    this.users = {};
     this.views = "home";
     installRouter((location) => {
       this.handleNavigation(location);
@@ -58,8 +54,6 @@ export class StatuesApp extends LitElement {
     this.handleNavigation(window.location);
     this.actualUser = data.user.name;
     localStorage.setItem("actualUser", this.actualUser);
-    this.users = data.user.name;
-    localStorage.setItem("users", this.users);
   }
 
   handleViews() {
@@ -75,7 +69,7 @@ export class StatuesApp extends LitElement {
         ></game-component>`;
       }
       case "ranking": {
-        return html `<ranking-component .users=${this.users}></ranking-component>`;
+        return html `<ranking-component></ranking-component>`;
       }
       default: {
         this.navigate({ view: "home" });

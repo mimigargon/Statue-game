@@ -27,7 +27,7 @@ export class RankingComponent extends LitElement {
       static get properties() {
         return {
           users: {
-            type: Object,
+            type: Array,
           }
         };
       }
@@ -35,13 +35,11 @@ export class RankingComponent extends LitElement {
     
       constructor() {
         super();
-        this.users = {};
+        this.users = [];
       }
 
       firstUpdated() {
-        this.users = JSON.parse(
-          localStorage.getItem("user." + localStorage.getItem("users"))
-        );
+        this.users = JSON.parse(localStorage.getItem("actualUser"))
         console.log(this.users)
       }
     
@@ -49,16 +47,20 @@ export class RankingComponent extends LitElement {
         return html`
         <div class="container">
           <h1>Score rakning</h1>
-          <table>
-          <tr>
-            <th>Users</th>
-            <th>High score</th>
-          </tr>
-          <tr>
-            <td>${this.users.name}</td>
-            <td>${this.users.highScore}</td>
-          </tr>
-          </table>
+          ${this.users.map((user) => {
+            return html `
+            <table>
+            <tr>
+              <th>Users</th>
+              <th>High score</th>
+            </tr>
+            <tr>
+              <td>${user.name}</td>
+              <td>${user.highScore}</td>
+            </tr>
+            </table>
+            `;
+          })}
         </div>
         `;
       }
