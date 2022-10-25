@@ -36,31 +36,32 @@ export class RankingComponent extends LitElement {
       constructor() {
         super();
         this.users = [];
+        for(let i = 0; i < localStorage.length; i++){
+          if(localStorage.key(i).startsWith("user.")){
+            this.users.push(JSON.parse(localStorage.getItem(localStorage.key(i))));
+          }
+        }
       }
 
-      firstUpdated() {
-        this.users = JSON.parse(localStorage.getItem("actualUser"))
-        console.log(this.users)
-      }
     
       render() {
         return html`
         <div class="container">
           <h1>Score rakning</h1>
+          <table>
+          <tr>
+            <th>Users</th>
+            <th>High score</th>
+          </tr>
           ${this.users.map((user) => {
             return html `
-            <table>
-            <tr>
-              <th>Users</th>
-              <th>High score</th>
-            </tr>
             <tr>
               <td>${user.name}</td>
               <td>${user.highScore}</td>
             </tr>
-            </table>
             `;
           })}
+          </table>
         </div>
         `;
       }
