@@ -67,6 +67,7 @@ export class GameComponent extends LitElement {
     return {
       actualUser: {
         type: Object,
+        attribute: 'actual-user'
       },
       lights: {
         type: Object,
@@ -91,6 +92,9 @@ export class GameComponent extends LitElement {
       redLightInterval: {
         type: String,
         attribute: "red-interval"
+      },
+      lastMove: {
+        type: String,
       }
     };
   }
@@ -102,14 +106,13 @@ export class GameComponent extends LitElement {
       green: "🏃",
       red: "🚨",
     };
-    this.canWalk = true;
+    this.canWalk = false;
     this.time = 0;
     this.points = 0;
     this.highScorePoints = 0;
-    this.leftClicks = 0;
-    this.rightClicks = 0;
     this.greenLightInterval = "";
     this.redLightInterval = "";
+    this.lastMove = "";
   }
 
   firstUpdated() {
@@ -168,49 +171,49 @@ export class GameComponent extends LitElement {
     clearInterval(this.redLightInterval);
   }
 
-  pointsToScore() {
-    if (this.canWalk === true) {
-      this.actualUser.score = this.points;
-      this.actualUser.highScore = this.highScorePoints;
+  pointsToScore(move) {
+   this.lastMove = move
+   console.log(this.lastMove)
+   localStorage.setItem("lastMove", this.lastMove)
 
-      if (this.actualUser.highScore > this.actualUser.score) {
-        this.highScorePoints = this.highScorePoints + 0;
-        this.points = this.points + 1;
-      } else if (this.actualUser.score === this.actualUser.highScore) {
-        this.points = this.points + 1;
-        this.highScorePoints = this.highScorePoints + 1;
+    if(this.startGame){
+      if (this.canWalk === true) {
+        this.actualUser.score = this.points;
+        this.actualUser.highScore = this.highScorePoints;
+  
+        if (this.actualUser.highScore > this.actualUser.score) {
+          this.highScorePoints = this.highScorePoints + 0;
+          this.points = this.points + 1;
+        } else if (this.actualUser.score === this.actualUser.highScore) {
+          this.points = this.points + 1;
+          this.highScorePoints = this.highScorePoints + 1;
+        }else if(this.lastMove === localStorage.getItem("lastMove")){
+          this.points = this.points - 1;
+          if(this.points = 0){
+            this.points = this.points - 0;
+          }
+        }
+  
+        localStorage.setItem(
+          "user." + this.actualUser.name,
+          JSON.stringify(this.actualUser)
+        );
+        this.requestUpdate();
+
+      } else {
+        this.points = 0;
+        this.actualUser.score = this.points;
+        localStorage.setItem(
+          "user." + this.actualUser.name,
+          JSON.stringify(this.actualUser)
+        );
+        this.requestUpdate();
       }
 
-      localStorage.setItem(
-        "user." + this.actualUser.name,
-        JSON.stringify(this.actualUser)
-      );
-
-      this.requestUpdate();
-    } else {
-      this.points = 0;
-      this.actualUser.score = this.points;
-      localStorage.setItem(
-        "user." + this.actualUser.name,
-        JSON.stringify(this.actualUser)
-      );
-      this.requestUpdate();
     }
   }
 
-  dblClickHandler() {
-    this.points = this.points - 2;
-    this.actualUser.score = this.points;
-    this.highScorePoints = this.highScorePoints + 0;
-    this.actualUser.highScore = this.highScorePoints;
-    if (this.points === 0) {
-      this.points = this.points - 0;
-    }
-    localStorage.setItem(
-      "user." + this.actualUser.name,
-      JSON.stringify(this.actualUser)
-    );
-  }
+
 
   render() {
     return html`
@@ -253,15 +256,13 @@ export class GameComponent extends LitElement {
         <div class="walk-buttons">
           <button
             class="left"
-            @click="${this.pointsToScore}"
-            @dblclick="${this.dblClickHandler}"
+            @click="${() => {this.pointsToScore("left")}}"
           >
             👣 Left
           </button>
           <button
             class="right"
-            @click="${this.pointsToScore}"
-            @dblclick="${this.dblClickHandler}"
+            @click="${() => {this.pointsToScore("right")}}"
           >
             Right 👣
           </button>

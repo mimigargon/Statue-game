@@ -8,7 +8,6 @@ import "./views/ranking-component";
 export class StatuesApp extends LitElement {
   static get styles() {
     return css`
-      background-color: black;
     `;
   }
 
