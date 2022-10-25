@@ -56,8 +56,7 @@ it('If Right or Left button clicked, get one point', async () => {
 
     expect(el.actualUser).to.deep.equal({name: "NewUser589", score: 2, highScore: 0})
 
-
-})
+});
 it('If Ranking button clicked render ranking component', async () => {
     const el = await fixture(html `<game-component actual-user='{"name": "User123", "score": 0, "highScore": 10}></game-component>`);
 
