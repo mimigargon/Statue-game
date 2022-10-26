@@ -1,18 +1,12 @@
 import { LitElement, html, css } from "lit";
 
+import styles from "../styles/styles"
+
 export class GameComponent extends LitElement {
   static get styles() {
-    return css`
-      * {
-        font-family: fantasy;
-        color: black;
-      }
+    return [css`
 
       .container {
-        display: flex;
-        flex-direction: column;
-        place-content: center;
-        align-items: center;
         margin-top: 50px;
       }
 
@@ -39,14 +33,6 @@ export class GameComponent extends LitElement {
         align-content: center;
       }
 
-      button {
-        background-color: transparent;
-        border: 2px solid black;
-        border-radius: 20px;
-        padding: 10px 20px 10px 20px;
-        font-size: 17px;
-      }
-
       p {
         margin-bottom: 35px;
         font-size: 27px;
@@ -60,7 +46,7 @@ export class GameComponent extends LitElement {
       .red-light {
         font-size: 80px;
       }
-    `;
+    `, styles];
   }
 
   static get properties() {
@@ -69,21 +55,9 @@ export class GameComponent extends LitElement {
         type: Object,
         attribute: "actual-user",
       },
-      lights: {
-        type: Object,
-      },
       canWalk: {
         type: Boolean,
         attribute: "can-walk",
-      },
-      time: {
-        type: Number,
-      },
-      points: {
-        type: Number,
-      },
-      highScorePoints: {
-        type: Number,
       },
       greenLightInterval: {
         type: String,
@@ -96,6 +70,9 @@ export class GameComponent extends LitElement {
       lastMove: {
         type: String,
       },
+      gameStarted: {
+        type: Boolean,
+      }
     };
   }
 
@@ -107,12 +84,10 @@ export class GameComponent extends LitElement {
       red: "🚨",
     };
     this.canWalk = false;
-    this.time = 0;
-    this.points = 0;
-    this.highScorePoints = 0;
     this.greenLightInterval = "";
     this.redLightInterval = "";
     this.lastMove = "";
+    this.gameStarted = false;
   }
 
   firstUpdated() {
@@ -149,76 +124,46 @@ export class GameComponent extends LitElement {
 
   startGame() {
     if (this.canWalk === true) {
-      this.time =
+      const time =
         Math.max(10000 - this.actualUser.score * 100, 2000) +
         Math.random(-1500, 1500);
       this.greenLightInterval = setInterval(
         this.toggleLights.bind(this),
-        this.time
+        time
       );
       this.requestUpdate();
     } else {
-      this.time = 3000;
       this.redLightInterval = setInterval(
         this.toggleLights.bind(this),
-        this.time
+        3000
       );
     }
+    this.gameStarted = true;
   }
 
   stopGame() {
     clearInterval(this.greenLightInterval);
     clearInterval(this.redLightInterval);
+    this.gameStarted = false;
   }
 
   pointsToScore(move) {
-    this.lastMove = move;
-    console.log(this.lastMove);
-    localStorage.setItem("lastMove", this.lastMove);
-    let lastButton = localStorage.getItem("lastMove");
-    console.log(lastButton);
-
     if (this.canWalk === true) {
-      if (this.lastMove === lastButton) {
-        this.points = this.points -1;
-        this.actualUser.score = this.points;
-        console.log("hola");
-        this._updateUser();
+      if (this.lastMove === move) {
+        this.actualUser.score--;
+      }else{
+        this.actualUser.score++;
       }
-
-      if (this.actualUser.highScore > this.actualUser.score) {
-        this.highScorePoints = this.highScorePoints + 0;
-        this.points = this.points + 1;
-        this.actualUser.score = this.points;
-        this.actualUser.highScore = this.highScorePoints;
-        console.log("adios");
-        this._updateUser();
+      if(this.actualUser.score >= this.actualUser.highScore){
+        this.actualUser.highScore = this.actualUser.score;
       }
-
-      if (this.actualUser.score === this.actualUser.highScore) {
-        this.points = this.points + 1;
-        this.highScorePoints = this.highScorePoints + 1;
-        this.actualUser.score = this.points;
-        this.actualUser.highScore = this.highScorePoints;
-        console.log("bye");
-        this._updateUser();
-      }
-
-      /* localStorage.setItem(
-          "user." + this.actualUser.name,
-          JSON.stringify(this.actualUser)
-        );
-        this.requestUpdate();
- */
+      this.lastMove = move;
     } else {
-      this.points = 0;
-      this.actualUser.score = this.points;
-      localStorage.setItem(
-        "user." + this.actualUser.name,
-        JSON.stringify(this.actualUser)
-      );
-      this.requestUpdate();
+      this.lastMove = undefined;
+      this.actualUser.score = 0;
     }
+    this.requestUpdate();
+    this._updateUser();
   }
 
   _updateUser() {
@@ -272,6 +217,7 @@ export class GameComponent extends LitElement {
             @click="${() => {
               this.pointsToScore("left");
             }}"
+            ?disabled=${!this.gameStarted}
           >
             👣 Left
           </button>
@@ -280,6 +226,7 @@ export class GameComponent extends LitElement {
             @click="${() => {
               this.pointsToScore("right");
             }}"
+            ?disabled=${!this.gameStarted}
           >
             Right 👣
           </button>

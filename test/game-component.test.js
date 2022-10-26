@@ -59,10 +59,8 @@ it('If Right or Left button clicked, get one point', async () => {
 });
 it('If Ranking button clicked render ranking component', async () => {
     const el = await fixture(html `<game-component actual-user='{"name": "User123", "score": 0, "highScore": 10}></game-component>`);
+    expect(el).to.exist;
 
-    expect(el.shadowRoot.querySelector('#to-ranking')).to.exist;
-
-    el.shadowRoot.querySelector('#to-ranking').click();
     app.navigate({view: "ranking", user: {}})
 
     await el.updateComplete;

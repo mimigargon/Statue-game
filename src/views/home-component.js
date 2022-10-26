@@ -1,17 +1,11 @@
 import { LitElement, html, css } from "lit";
 
+import styles from "../styles/styles"
+
 export class HomeComponent extends LitElement {
   static get styles() {
-    return css`
-      * {
-        font-family: fantasy;
-        color: black;
-      }
+    return [css`
       .container {
-        display: flex;
-        flex-direction: column;
-        place-content: center;
-        align-items: center;
         margin-top: 10%;
       }
 
@@ -34,7 +28,7 @@ export class HomeComponent extends LitElement {
         border-radius: 20px;
       }
 
-      button {
+      .login-btn {
         margin-top: 10%;
         background-color: transparent;
         font-size: 25px;
@@ -43,7 +37,7 @@ export class HomeComponent extends LitElement {
         border: 2px solid black;
 
       }
-    `;
+    `, styles];
   }
 
   static get properties() {
@@ -99,7 +93,7 @@ export class HomeComponent extends LitElement {
         <h2>👻</h2>
         <form class="login-form" @submit=${this.onLogin}>
           <input type="text" id="name" name="name" />
-          <button type="submit">JOIN</button>
+          <button class="login-btn" type="submit">JOIN</button>
         </form>
       </div>
     `;

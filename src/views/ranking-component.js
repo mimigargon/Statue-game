@@ -1,18 +1,12 @@
 import { LitElement, html, css } from "lit";
 
+import styles from "../styles/styles"
+
 export class RankingComponent extends LitElement {
   static get styles() {
-    return css`
-      * {
-        font-family: fantasy;
-        color: black;
-      }
+    return [css`
 
       .container {
-        display: flex;
-        flex-direction: column;
-        place-content: center;
-        align-items: center;
         margin-top: 50px;
       }
 
@@ -20,14 +14,7 @@ export class RankingComponent extends LitElement {
         font-size: 20px;
       }
 
-      button {
-        background-color: transparent;
-        border: 2px solid black;
-        border-radius: 20px;
-        padding: 10px 20px 10px 20px;
-        font-size: 17px;
-      }
-    `;
+    `, styles];
   }
 
   static get properties() {
