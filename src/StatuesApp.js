@@ -15,6 +15,7 @@ export class StatuesApp extends LitElement {
     return {
       actualUser: {
         type: Object,
+        attribute: 'actual-user'
       },
       views: {
         type: String,

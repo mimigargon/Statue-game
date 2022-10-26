@@ -1,17 +1,20 @@
-<p align="center">
-  <img width="200" src="https://open-wc.org/hero.png"></img>
-</p>
-
-## Open-wc Starter App
+## Red Light, Green Light!
 
 [![Built with open-wc recommendations](https://img.shields.io/badge/built%20with-open--wc-blue.svg)](https://github.com/open-wc)
+
+### Red Light, Green Light! is a progressive mobile web app about the famous Squid Game challenges "red light, green light". The app doesn't require a server to work, nor it requires an internet conexion to work once it has started.
+
+## Tech Stack
+
+It's made entirely with Lit and deployed using Netlify. You can open the app clicking [here](https://statues-app.netlify.app/home). 
 
 ## Quickstart
 
 To get started:
 
 ```bash
-npm init @open-wc
+npm install
+npm run start
 # requires node 10 & npm 6 or higher
 ```
 
@@ -24,8 +27,11 @@ npm init @open-wc
 - `lint` runs the linter for your project
 - `format` fixes linting and formatting errors
 
-## Tooling configs
+## Details
 
-For most of the tools, the configuration is in the `package.json` to reduce the amount of files in your project.
+The game has three views: `home`, `game` and `ranking`;
+- `home`: It contains de form that allows to register (in case that the user doesn't exist) or to login into your account.
+- `game`: It is the game itself. Once you click on "Start!" button, the icons start to change. You must click on "Left" and "Right" button alternatively to win points. If you click on one of those buttons twice or more, you'll loose one point each time. If you click on one of those buttons when the light is red, you'll loose all your points. If you wish to stop the game you just have to click on "Stop!" button.
+-`ranking`: It shows a table with the existing players along with their high scores.
 
-If you customize the configuration a lot, you can consider moving them to individual files.
+All the information is stored in the `localStorage` of the browser. 
