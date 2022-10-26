@@ -1,58 +1,21 @@
 import { LitElement, html, css } from "lit";
 
-import styles from "../styles/styles"
+import styles from "../styles/styles";
+import gameComponentStyles from "../styles/game-component-styles";
 
 export class GameComponent extends LitElement {
   static get styles() {
-    return [css`
-
-      .container {
-        margin-top: 50px;
-      }
-
-      .header-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .game-container {
-        margin-top: 5%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .lights-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        align-content: center;
-      }
-
-      p {
-        margin-bottom: 35px;
-        font-size: 27px;
-        margin-top: -5px;
-      }
-
-      .green-light {
-        font-size: 80px;
-      }
-
-      .red-light {
-        font-size: 80px;
-      }
-    `, styles];
+    return [styles, gameComponentStyles];
   }
 
   static get properties() {
     return {
       actualUser: {
-        type: Object,
+        type: {
+          name: { type: String },
+          score: { type: Number },
+          highScore: { type: Number },
+        },
         attribute: "actual-user",
       },
       canWalk: {
@@ -72,7 +35,7 @@ export class GameComponent extends LitElement {
       },
       gameStarted: {
         type: Boolean,
-      }
+      },
     };
   }
 
@@ -127,16 +90,10 @@ export class GameComponent extends LitElement {
       const time =
         Math.max(10000 - this.actualUser.score * 100, 2000) +
         Math.random(-1500, 1500);
-      this.greenLightInterval = setInterval(
-        this.toggleLights.bind(this),
-        time
-      );
+      this.greenLightInterval = setInterval(this.toggleLights.bind(this), time);
       this.requestUpdate();
     } else {
-      this.redLightInterval = setInterval(
-        this.toggleLights.bind(this),
-        3000
-      );
+      this.redLightInterval = setInterval(this.toggleLights.bind(this), 3000);
     }
     this.gameStarted = true;
   }
@@ -151,10 +108,10 @@ export class GameComponent extends LitElement {
     if (this.canWalk === true) {
       if (this.lastMove === move) {
         this.actualUser.score--;
-      }else{
+      } else {
         this.actualUser.score++;
       }
-      if(this.actualUser.score >= this.actualUser.highScore){
+      if (this.actualUser.score >= this.actualUser.highScore) {
         this.actualUser.highScore = this.actualUser.score;
       }
       this.lastMove = move;
@@ -179,53 +136,49 @@ export class GameComponent extends LitElement {
         <div class="header-container">
           <h1>Red Light, Green Light</h1>
           <h2>Hi ${this.actualUser.name}</h2>
+          <p>High Score: ${this.actualUser.highScore}</p>
           <div class="goto-buttons">
             <button
               class="to-home"
-              @click=${() => {
-                this.toHome("home", this.actualUser);
-              }}
+              @click=${() => this.toHome("home", this.actualUser)}
             >
               Home
             </button>
             <button
               id="to-ranking"
-              @click=${() => {
-                this.toRanking("ranking", this.actualUser);
-              }}
+              @click=${() => this.toRanking("ranking", this.actualUser)}
             >
               Ranking
             </button>
           </div>
         </div>
         <div class="game-container">
-          <p>High Score: ${this.actualUser.highScore}</p>
+          <p>Score: ${this.actualUser.score}</p>
           <div class="buttons-container">
             <button id="start-game" @click=${this.startGame}>Start!</button>
             <button id="stop-game" @click=${this.stopGame}>Stop!</button>
           </div>
           <div id="lights-container">
-            ${this.canWalk
-              ? html`<h1 class="green-light">${this.lights.green}</h1>`
-              : html`<h1 class="red-light">${this.lights.red}</h1>`}
+            ${this.gameStarted
+              ? html`
+                  ${this.canWalk
+                    ? html`<h1 class="green-light">${this.lights.green}</h1>`
+                    : html`<h1 class="red-light">${this.lights.red}</h1>`}
+                `
+              : html`<h2>PULSA START PARA EMPEZAR</h2>`}
           </div>
-          <p>Score: ${this.actualUser.score}</p>
         </div>
         <div class="walk-buttons">
           <button
             class="left"
-            @click="${() => {
-              this.pointsToScore("left");
-            }}"
+            @click="${() => this.pointsToScore("left")}"
             ?disabled=${!this.gameStarted}
           >
             👣 Left
           </button>
           <button
             class="right"
-            @click="${() => {
-              this.pointsToScore("right");
-            }}"
+            @click="${() => this.pointsToScore("right")}"
             ?disabled=${!this.gameStarted}
           >
             Right 👣

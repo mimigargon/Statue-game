@@ -1,50 +1,15 @@
 import { LitElement, html, css } from "lit";
 
-import styles from "../styles/styles"
+import styles from "../styles/styles";
+import homeComponentStyles from "../styles/home-component-styles";
 
 export class HomeComponent extends LitElement {
   static get styles() {
-    return [css`
-      .container {
-        margin-top: 10%;
-      }
-
-      h2 {
-        font-size: 155px;
-        margin-top: -1%;
-      }
-
-      form {
-        display: flex;
-        flex-direction: column;
-        align-content: center;
-        justify-content: center;
-        align-items: center;
-      }
-
-      #name {
-        padding: 10px 90px 10px 10px;
-        border: 2px black solid;
-        border-radius: 20px;
-      }
-
-      .login-btn {
-        margin-top: 10%;
-        background-color: transparent;
-        font-size: 25px;
-        padding: 10px 50px 10px 50px;
-        border-radius: 20px;
-        border: 2px solid black;
-
-      }
-    `, styles];
+    return [styles, homeComponentStyles];
   }
 
   static get properties() {
     return {
-      title: {
-        type: String,
-      },
       views: {
         type: String,
       },

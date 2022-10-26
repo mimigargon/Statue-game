@@ -20,5 +20,6 @@ export default css `
     border-radius: 20px;
     padding: 10px 20px 10px 20px;
     font-size: 17px;
+    cursor: pointer;
   }
 `;
