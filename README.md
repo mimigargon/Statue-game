@@ -30,7 +30,7 @@ npm run start
 ## Details
 
 The game has three views: `home`, `game` and `ranking`;
-- `home`: It contains de form that allows to register (in case that the user doesn't exist) or to login into your account.
+- `home`: It contains the form that allows to register (in case that the user doesn't exist) or to login into your account.
 - `game`: It is the game itself. Once you click on "Start!" button, the icons start to change. You must click on "Left" and "Right" button alternatively to win points. If you click on one of those buttons twice or more, you'll loose one point each time. If you click on one of those buttons when the light is red, you'll loose all your points. If you wish to stop the game you just have to click on "Stop!" button.
 -`ranking`: It shows a table with the existing players along with their high scores.
 
