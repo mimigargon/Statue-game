@@ -6,7 +6,7 @@
 
 ## Tech Stack
 
-It's made entirely with Lit and deployed using Netlify. You can open the app clicking [here](https://statues-app.netlify.app/home). 
+It's made entirely with Lit and deployed using Netlify. You can open the app clicking [here](https://statues-app.netlify.app). 
 
 ## Quickstart
 
